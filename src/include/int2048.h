@@ -16,10 +16,31 @@
 #include <vector>
 
 // Do not use "using namespace std;"
+#include <cstdint>
 
 namespace sjtu {
 class int2048 {
-  // todo
+public:
+  static const uint32_t BASE = 1000000000u; // 1e9
+private:
+  std::vector<uint32_t> a;                  // little-endian limbs
+  bool neg;
+
+  // helpers (implemented in .cpp)
+  void trim();
+  bool is_zero() const;
+  static int cmp_abs(const int2048 &x, const int2048 &y);
+  static void add_abs_to(int2048 &x, const int2048 &y);   // x = |x| + |y|
+  static void sub_abs_to(int2048 &x, const int2048 &y);   // x = |x| - |y|, assumes |x|>=|y|
+
+  static std::vector<uint32_t> mul_simple(const std::vector<uint32_t> &x,
+                                          const std::vector<uint32_t> &y);
+  static std::vector<uint32_t> karatsuba(const std::vector<uint32_t> &x,
+                                         const std::vector<uint32_t> &y);
+  static std::vector<uint32_t> multiply_limbs(const std::vector<uint32_t> &x,
+                                              const std::vector<uint32_t> &y);
+  static void divmod_abs(const int2048 &u, const int2048 &v, int2048 &q, int2048 &r);
+
 public:
   // Constructors
   int2048();
